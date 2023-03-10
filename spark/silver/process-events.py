@@ -49,7 +49,7 @@ extra_event_char_DF = events_charDF.select(
 
 # Bring the original and extra (event, [character]) DFs together and take the extra if it exists
 joined_event_character_DF = orig_event_char_DF.join(
-    extra_event_char_DF, 'orig_event_char_DF.id' == 'extra_event_char_DF.event_id', 'left'
+    extra_event_char_DF, orig_event_char_DF.id == extra_event_char_DF.event_id, 'left'
 ).select(
     orig_event_char_DF.id,
     F.coalesce(extra_event_char_DF.characters, orig_event_char_DF.characters).alias('characters')
