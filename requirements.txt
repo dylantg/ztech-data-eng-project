@@ -1,0 +1,10 @@
+pyspark
+apache-airflow[apache.spark]
+requests
+pyyaml
+pyarrow
+fastparquet
+matplotlib
+pandas
+plotly
+python-dotenv
