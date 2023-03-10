@@ -3,14 +3,14 @@ import os
 import time
 import hashlib
 from dotenv import load_dotenv
-from pyspark.sql import SparkSession
+# from pyspark.sql import SparkSession
 
 load_dotenv()
 MARVEL_PUBLIC_KEY = os.getenv('MARVEL_PUBLIC_KEY')
 MARVEL_PRIVATE_KEY = os.getenv('MARVEL_PRIVATE_KEY')
 
-spark = SparkSession.builder.appName('get-characters').getOrCreate()
-sc = spark.sparkContext
+# spark = SparkSession.builder.appName('get-characters').getOrCreate()
+# sc = spark.sparkContext
 
 ts = 1678428168  # int(time.time())
 output_folder = f"./case/landing/characters/uploaded_at={ts}"
@@ -50,8 +50,8 @@ def get_batch(url, idx):
 url_params = make_url_params(ts)
 base_url = f"http://gateway.marvel.com/v1/public/characters{url_params}"
 batches = get_batch_number(base_url)
-rdd = sc.parallelize(range(batches + 1), batches + 1)
-rdd.map(lambda i: get_batch(base_url, i)).collect()
+# rdd = sc.parallelize(range(batches + 1), batches + 1)
+# rdd.map(lambda i: get_batch(base_url, i)).collect()
 
-# for batch in range(batches + 1):
-#     get_batch(base_url, batch)
+for batch in range(batches + 1):
+    get_batch(base_url, batch)

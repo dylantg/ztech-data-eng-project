@@ -2,14 +2,14 @@ import os
 import requests
 import hashlib
 from dotenv import load_dotenv
-from pyspark.sql import SparkSession
+# from pyspark.sql import SparkSession
 
 load_dotenv()
 MARVEL_PUBLIC_KEY = os.getenv('MARVEL_PUBLIC_KEY')
 MARVEL_PRIVATE_KEY = os.getenv('MARVEL_PRIVATE_KEY')
 
-spark = SparkSession.builder.appName('get-events').getOrCreate()
-sc = spark.sparkContext
+# spark = SparkSession.builder.appName('get-events').getOrCreate()
+# sc = spark.sparkContext
 
 ts = 1678428168  # int(time.time())
 output_folder = f"./case/landing/events/uploaded_at={ts}"
@@ -78,5 +78,8 @@ def get_batch(url, url_params, idx):
 url_params = make_url_params(ts)
 base_url = f"http://gateway.marvel.com/v1/public/events{url_params}"
 batches = get_batch_number(base_url)
-rdd = sc.parallelize(range(batches + 1))
-rdd.map(lambda i: get_batch(base_url, url_params, i)).collect()
+# rdd = sc.parallelize(range(batches + 1))
+# rdd.map(lambda i: get_batch(base_url, url_params, i)).collect()
+
+for batch in batches:
+    get_batch(base_url, url_params, batch)
