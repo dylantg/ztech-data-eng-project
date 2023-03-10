@@ -23,7 +23,6 @@ def make_url_params(ts):
     private_key = MARVEL_PRIVATE_KEY
     hash_input = f"{ts}{private_key}{public_key}"
     hsh = hashlib.md5(hash_input.encode('utf-8')).hexdigest()
-    # url = f"http://gateway.marvel.com/v1/public/{entity}?ts={ts}&apikey={public_key}&hash={hsh}"
     param_str = f"?ts={ts}&apikey={public_key}&hash={hsh}"
     return param_str
 
@@ -40,21 +39,16 @@ def get_batch(url, idx):
     offset = idx * 100
     url_with_limit_and_offset = f"{url}&limit=100&offset={offset}"
     response = requests.request("GET", url_with_limit_and_offset)
-    # response_json = response.json()
     response_txt = response.text
-    # total = response_json['data']['total']
-    # print(f"total: {total}")
     output_file = f"{output_folder}/characters_{idx}.json"
     with open(output_file, "w+") as file:
         file.write(response_txt)
         print(f"Written: {idx}")
-        # response_json = response.json()
-        # results = response_json['data']['results']
-        # file.write(json.dumps(results))
     return output_file
 
 
 url_params = make_url_params(ts)
 base_url = f"http://gateway.marvel.com/v1/public/characters{url_params}"
-rdd = sc.parallelize(range(3))
-rdd.map(lambda i: get_batch(base_url, i)).foreach(lambda f: print(f"File: {f}")).collect()
+batches = get_batch_number(base_url)
+rdd = sc.parallelize(range(batches + 1))
+rdd.map(lambda i: get_batch(base_url, i)).collect()

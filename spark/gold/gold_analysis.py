@@ -2,7 +2,7 @@ import os
 from pyspark.sql import SparkSession
 from pyspark.sql import functions as F
 
-spark = SparkSession.builder.appName('get-characters').getOrCreate()
+spark = SparkSession.builder.appName('gold-analysis').getOrCreate()
 sc = spark.sparkContext
 
 ts = 1678335199  # int(time.time())
@@ -29,7 +29,6 @@ top10DF = spark.createDataFrame(cDF.orderBy(charactersDF.comics_available.desc()
 top10_character_list = cDF.orderBy(charactersDF.comics_available.desc()).select('id').take(10)
 top10_ids = [str(x.id) for x in top10_character_list]
 
-# top10 = cDF.agg(F.collect_set('id'))
 ###############
 eventsDF = spark.read.parquet(events_input)
 charEvDF = eventsDF.select(
