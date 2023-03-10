@@ -20,7 +20,8 @@ df_q3 = pd.read_parquet(gold_q3_input)
 
 q1a_plot = px.bar(df_q1, x='character_name',
                   y=['comics_available', 'events_available', 'stories_available', 'series_available'],
-                  title='Top 10 Characters Appearances'
+                  title='Top 10 Characters Appearances',
+                  barmode='group'
                   )
 q1b_plot = px.bar(df_q1, x='character_name', y='total_event_days', title='Top 10 Characters Total Event Days')
 
@@ -54,5 +55,10 @@ q1b_plot.write_image(f"{plots_output}/q1b.jpeg")
 q2_plot.write_image(f"{plots_output}/q2.jpeg")
 q3_plot.write_image(f"{plots_output}/q3.jpeg")
 plot(fig, filename=f"{plots_output}/dash.html")
+plot(q1a_plot, filename=f"{plots_output}/q1a.html")
+plot(q1b_plot, filename=f"{plots_output}/q1b.html")
+plot(q2_plot, filename=f"{plots_output}/q2.html")
+plot(q3_plot, filename=f"{plots_output}/q3.html")
+
 
 fig.show()
