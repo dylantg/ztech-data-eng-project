@@ -3,7 +3,7 @@ from __future__ import annotations
 from airflow import DAG
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.bash import BashOperator
-from airflow.providers.ssh.operators.ssh import SSHOperator
+# from airflow.providers.ssh.operators.ssh import SSHOperator
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 from datetime import datetime, timedelta
 
@@ -33,6 +33,7 @@ default_args = {
 dag = DAG(
     "analyze-marvel-heroes",
     default_args=default_args,
+    schedule="0 21 * * *",  # Run at 9pm UTC
     schedule_interval=timedelta(1),
     start_date=datetime(now.year, now.month, now.day),
     catchup=False,
