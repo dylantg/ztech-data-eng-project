@@ -37,6 +37,11 @@ Airflow:
 Spark Master:
 `localhost:8181`
 
+Initial Airflow Login:
+- user: `airflow`
+- password: `airflow`
+
+
 In Airflow add Variables:
 - `marvel_public_key`
 - `marvel_private_key`

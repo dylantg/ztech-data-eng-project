@@ -74,13 +74,20 @@ process_events = SparkSubmitOperator(
     application="/usr/local/spark/app/silver/process_events.py",
     # Spark application path created in airflow and spark cluster
     name=spark_app_name,
-    conn_id="spark_default",
+    conn_id="spark_home",
     verbose=True,
     conf={"spark.master": spark_master},
     # application_args=[file_path],
     dag=dag
 )
 
+process_characters = BashOperator(
+    task_id='process_characters',
+    # bash_command='usr/bin/spark-submit --master spark://spark:7077 /usr/local/spark/app/silver/process_characters.py',
+    bash_command="""echo \'Spark_home: \' $SPARK_HOME\' &&
+                 /home/airflow/.local/lib/python3.7/site-packages/pyspark/bin/spark-submit --master spark://spark:7077 /usr/local/spark/app/silver/process_characters.py""",
+    dag=dag
+)
 # process_characters = SparkSubmitOperator(
 #     task_id="process_characters",
 #     application="/usr/local/spark/silver/process_characters.py",
@@ -103,11 +110,6 @@ process_events = SparkSubmitOperator(
 # )
 
 
-process_characters = BashOperator(
-    task_id='process_characters',
-    bash_command='usr/bin/spark-submit --master spark://spark:7077 /usr/local/spark/app/silver/process_characters.py',
-    dag=dag
-)
 
 process_gold = SparkSubmitOperator(
     task_id="process_gold",
