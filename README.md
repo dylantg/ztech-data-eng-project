@@ -30,3 +30,13 @@ docker tag local_airflow_spark local_airflow_spark:latest
 docker-compose up airflow-init
 docker-compose up
 ```
+
+Airflow:
+`localhost:8080`
+
+Spark Master:
+`localhost:8181`
+
+In Airflow add Variables:
+- `marvel_public_key`
+- `marvel_private_key`

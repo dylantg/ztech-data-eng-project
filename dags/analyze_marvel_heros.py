@@ -3,8 +3,10 @@ from __future__ import annotations
 from airflow import DAG
 from airflow.operators.empty import EmptyOperator
 from airflow.operators.bash import BashOperator
-# from airflow.providers.ssh.operators.ssh import SSHOperator
+from airflow.providers.ssh.operators.ssh import SSHOperator
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
+from airflow.models import Variable
+
 from datetime import datetime, timedelta
 
 ###############################################
@@ -18,6 +20,9 @@ spark_app_name = "Spark Hello World"
 # DAG Definition
 ###############################################
 now = datetime.now()
+ts = 1678428168
+marvel_public_key = Variable.get("marvel_public_key")
+marvel_private_key = Variable.get("marvel_private_key")
 
 default_args = {
     "owner": "airflow",
@@ -34,7 +39,7 @@ dag = DAG(
     "analyze-marvel-heroes",
     default_args=default_args,
     schedule="0 21 * * *",  # Run at 9pm UTC
-    schedule_interval=timedelta(1),
+    # schedule_interval=timedelta(1),
     start_date=datetime(now.year, now.month, now.day),
     catchup=False,
 )
@@ -47,21 +52,26 @@ start = EmptyOperator(
 get_events = BashOperator(
     task_id='get_events',
     #TODO: Check actual location
-    bash_command='python /home/airflow/airflow/spark/landing/get_events.py',
+    bash_command=f'python /usr/local/spark/app/landing/get_events.py --marvel_public_key {marvel_public_key} --marvel_private_key {marvel_private_key} --ts {ts}',
     dag=dag
 )
 
 get_characters = BashOperator(
-    task_id='get_events',
+    task_id='get_characters',
     #TODO: Check actual location
-    bash_command='python /home/airflow/airflow/spark/landing/get_characters.py',
+    # bash_command='python /home/airflow/airflow/spark/landing/get_characters.py',
+    # bash_command='python /usr/local/spark/app/landing/get_characters.py',
+    bash_command=f'''
+        python /usr/local/spark/app/landing/get_characters.py \
+        --marvel_public_key {marvel_public_key} --marvel_private_key {marvel_private_key} --ts {ts}
+    ''',
     dag=dag
 )
 
 
 process_events = SparkSubmitOperator(
     task_id="process_events",
-    application="/usr/local/spark/silver/process_events.py",
+    application="/usr/local/spark/app/silver/process_events.py",
     # Spark application path created in airflow and spark cluster
     name=spark_app_name,
     conn_id="spark_default",
@@ -71,15 +81,31 @@ process_events = SparkSubmitOperator(
     dag=dag
 )
 
-process_characters = SparkSubmitOperator(
-    task_id="process_characters",
-    application="/usr/local/spark/silver/process_characters.py",
-    # Spark application path created in airflow and spark cluster
-    name=spark_app_name,
-    conn_id="spark_default",
-    verbose=True,
-    conf={"spark.master": spark_master},
-    # application_args=[file_path],
+# process_characters = SparkSubmitOperator(
+#     task_id="process_characters",
+#     application="/usr/local/spark/silver/process_characters.py",
+#     # Spark application path created in airflow and spark cluster
+#     name=spark_app_name,
+#     conn_id="spark_default",
+#     verbose=True,
+#     conf={"spark.master": spark_master},
+#     # application_args=[file_path],
+#     dag=dag
+# )
+
+
+# process_characters = SSHOperator(
+#     task_id='process_characters',
+#     ssh_conn_id='spark_home',
+#     command=f'set -a; PYSPARK_PYTHON=python3; /usr/bin/spark-submit --master spark://spark:7077 /usr/local/spark/app/silver/process_characters.py',
+#     # command=f'set -a; PYSPARK_PYTHON=python3; /usr/bin/spark-submit --deploy-mode cluster {spark_parameters} /usr/local/spark/silver/process_characters.py',
+#     dag=dag
+# )
+
+
+process_characters = BashOperator(
+    task_id='process_characters',
+    bash_command='usr/bin/spark-submit --master spark://spark:7077 /usr/local/spark/app/silver/process_characters.py',
     dag=dag
 )
 

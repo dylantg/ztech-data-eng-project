@@ -3,13 +3,21 @@ import requests
 import hashlib
 from dotenv import load_dotenv
 # from pyspark.sql import SparkSession
+import argparse
 
-load_dotenv()
-MARVEL_PUBLIC_KEY = os.getenv('MARVEL_PUBLIC_KEY')
-MARVEL_PRIVATE_KEY = os.getenv('MARVEL_PRIVATE_KEY')
+# load_dotenv()
+# MARVEL_PUBLIC_KEY = os.getenv('MARVEL_PUBLIC_KEY')
+# MARVEL_PRIVATE_KEY = os.getenv('MARVEL_PRIVATE_KEY')
 
 # spark = SparkSession.builder.appName('get-events').getOrCreate()
 # sc = spark.sparkContext
+parser = argparse.ArgumentParser()
+parser.add_argument('--marvel_public_key', type=str)
+parser.add_argument('--marvel_private_key', type=str)
+parser.add_argument('--ts', type=str)
+args = parser.parse_args()
+
+ts = args.ts
 
 ts = 1678428168  # int(time.time())
 output_folder = f"./case/landing/events/uploaded_at={ts}"
@@ -23,8 +31,10 @@ os.makedirs(os.path.dirname(f"{event_char_output_folder}/"), exist_ok=True)
 
 
 def make_url_params(ts):
-    public_key = MARVEL_PUBLIC_KEY
-    private_key = MARVEL_PRIVATE_KEY
+    # public_key = MARVEL_PUBLIC_KEY
+    # private_key = MARVEL_PRIVATE_KEY
+    public_key = args.marvel_public_key
+    private_key = args.marvel_private_key
     hash_input = f"{ts}{private_key}{public_key}"
     hsh = hashlib.md5(hash_input.encode('utf-8')).hexdigest()
     param_str = f"?ts={ts}&apikey={public_key}&hash={hsh}"
@@ -81,5 +91,5 @@ batches = get_batch_number(base_url)
 # rdd = sc.parallelize(range(batches + 1))
 # rdd.map(lambda i: get_batch(base_url, url_params, i)).collect()
 
-for batch in batches:
+for batch in range(batches + 1):
     get_batch(base_url, url_params, batch)
