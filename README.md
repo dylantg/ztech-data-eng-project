@@ -22,3 +22,11 @@ Monitoring/Alerting for Pipeline:
 - Add time-based alerting to let the oncall know if the job has not completed on schedule
 - Add data-quality checks to make sure row counts and other heuristics are within a set range
 - Have alerts of different levels set up in Splunk and PagerDuty (or a more current iteration) if warranted
+
+Docker Commands (WIP):
+```
+docker build --rm --force-rm -t local_airflow_spark .
+docker tag local_airflow_spark local_airflow_spark:latest
+docker-compose up airflow-init
+docker-compose up
+```
