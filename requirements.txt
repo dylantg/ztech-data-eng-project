@@ -9,3 +9,4 @@ pandas
 kaleido
 plotly
 python-dotenv
+apache-airflow-providers-ssh
