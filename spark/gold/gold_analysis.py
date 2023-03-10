@@ -30,7 +30,7 @@ charactersDF = spark.read.parquet(characters_input).select(
 top10DF = spark.createDataFrame(charactersDF.take(10))
 
 # Get a list of the character_ids from characters with the 10 highest comic available count
-top10_character_ids = [str(x.id) for x in top10DF.select('id')]
+top10_character_ids = [str(x.id) for x in top10DF.select('id').collect()]
 
 ###############
 
@@ -90,6 +90,7 @@ q2 = characterEventDF.select(
 ).agg(
     F.size(F.collect_set('character_id')).alias('distinct_characters')
 ).orderBy(F.col('event_year'))
+
 q2.write.parquet(gold_output_q2, 'overwrite')
 
 
@@ -107,4 +108,5 @@ q3 = top10_characterEventDF.select(
     F.col('character_name'),
     F.col('event_year')
 )
+
 q3.write.parquet(gold_output_q3, 'overwrite')

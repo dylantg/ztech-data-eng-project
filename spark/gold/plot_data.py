@@ -11,7 +11,7 @@ gold_q2_input = f"./case/gold/uploaded_at={ts}/q2"
 gold_q3_input = f"./case/gold/uploaded_at={ts}/q3"
 
 plots_output = f"./case/gold/uploaded_at={ts}/plots"
-os.makedirs(os.path.dirname(plots_output), exist_ok=True)
+os.makedirs(os.path.dirname(f"{plots_output}/"), exist_ok=True)
 
 df_q1 = pd.read_parquet(gold_q1_input)
 df_q2 = pd.read_parquet(gold_q2_input)
@@ -27,6 +27,7 @@ q1b_plot = px.bar(df_q1, x='character_name', y='total_event_days', title='Top 10
 q2_plot = px.line(df_q2, x='event_year', y='distinct_characters', title='Distinct Characters per Year')
 
 q3_plot = px.density_heatmap(df_q3, x="event_year", y="character_name", z='distinct_events', text_auto=True)
+
 
 figures = [
     (q1a_plot, 1, 1),
@@ -48,11 +49,10 @@ for tup in figures:
         # fig.
 
 fig.write_image(f"{plots_output}/dash.jpeg")
-plot(fig, filename=f"{plots_output}/dash2.jpeg")
-plot(fig)
-# fig.show()
-
+q1a_plot.write_image(f"{plots_output}/q1a.jpeg")
+q1b_plot.write_image(f"{plots_output}/q1b.jpeg")
+q2_plot.write_image(f"{plots_output}/q2.jpeg")
+q3_plot.write_image(f"{plots_output}/q3.jpeg")
+plot(fig, filename=f"{plots_output}/dash.html")
 
 fig.show()
-# plotly.offline.plot(fig, filename='C:/plotlyplots/canada_offline.html')
-
