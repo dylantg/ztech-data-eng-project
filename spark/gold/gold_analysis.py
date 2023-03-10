@@ -5,7 +5,7 @@ from pyspark.sql import functions as F
 spark = SparkSession.builder.appName('gold-analysis').getOrCreate()
 sc = spark.sparkContext
 
-ts = 1678335199  # int(time.time())
+ts = 1678428168  # int(time.time())
 characters_input = f"./case/silver/characters/uploaded_at={ts}/*.parquet"
 events_input = f"./case/silver/events/uploaded_at={ts}/*.parquet"
 

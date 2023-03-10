@@ -6,7 +6,7 @@ from pyspark.sql import functions as F
 spark = SparkSession.builder.appName('process-events').getOrCreate()
 sc = spark.sparkContext
 
-ts = 1678335199  # int(time.time())
+ts = 1678428168  # int(time.time())
 
 event_inputs = f"./case/landing/events/uploaded_at={ts}/events_*.json"
 char_event_inputs = f"./case/landing/event_characters/uploaded_at={ts}/char_events_*.json"

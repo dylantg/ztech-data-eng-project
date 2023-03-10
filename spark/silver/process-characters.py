@@ -5,7 +5,7 @@ from pyspark.sql import functions as F
 spark = SparkSession.builder.appName('get-characters').getOrCreate()
 sc = spark.sparkContext
 
-ts = 1678335199  # int(time.time())
+ts = 1678428168  # int(time.time())
 inputs = f"./case/landing/characters/uploaded_at={ts}/characters_*.json"
 outputs = f"./case/silver/characters/uploaded_at={ts}/"
 os.makedirs(os.path.dirname(outputs), exist_ok=True)

@@ -15,7 +15,7 @@ sc = spark.sparkContext
 ts = 1678428168  # int(time.time())
 output_folder = f"./case/landing/characters/uploaded_at={ts}"
 print(f"output_folder: {output_folder}")
-os.makedirs(os.path.dirname(output_folder), exist_ok=True)
+os.makedirs(os.path.dirname(f"{output_folder}/"), exist_ok=True)
 
 
 def make_url_params(ts):
@@ -50,5 +50,8 @@ def get_batch(url, idx):
 url_params = make_url_params(ts)
 base_url = f"http://gateway.marvel.com/v1/public/characters{url_params}"
 batches = get_batch_number(base_url)
-rdd = sc.parallelize(range(batches + 1))
+rdd = sc.parallelize(range(batches + 1), batches + 1)
 rdd.map(lambda i: get_batch(base_url, i)).collect()
+
+# for batch in range(batches + 1):
+#     get_batch(base_url, batch)

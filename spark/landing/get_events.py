@@ -11,9 +11,8 @@ MARVEL_PRIVATE_KEY = os.getenv('MARVEL_PRIVATE_KEY')
 spark = SparkSession.builder.appName('get-events').getOrCreate()
 sc = spark.sparkContext
 
-entity = 'events'
-ts = 1678335199  # int(time.time())
-output_folder = f"./case/landing/{entity}/uploaded_at={ts}"
+ts = 1678428168  # int(time.time())
+output_folder = f"./case/landing/events/uploaded_at={ts}"
 print(f"output_folder: {output_folder}")
 os.makedirs(os.path.dirname(f"{output_folder}/"), exist_ok=True)
 
@@ -60,12 +59,12 @@ def get_event_character_list(result, url_param_str):
     return
 
 
-def get_batch(url, entity, url_params, idx):
+def get_batch(url, url_params, idx):
     offset = idx * 100
     url_with_limit_and_offset = f"{url}&limit=100&offset={offset}"
     response = requests.request("GET", url_with_limit_and_offset)
     response_txt = response.text
-    output_file = f"{output_folder}/{entity}_{idx}.json"
+    output_file = f"{output_folder}/events_{idx}.json"
     with open(output_file, "w+") as file:
         file.write(response_txt)
         print(f"Written: {idx}")
@@ -80,4 +79,4 @@ url_params = make_url_params(ts)
 base_url = f"http://gateway.marvel.com/v1/public/events{url_params}"
 batches = get_batch_number(base_url)
 rdd = sc.parallelize(range(batches + 1))
-rdd.map(lambda i: get_batch(base_url, entity, url_params, i)).collect()
+rdd.map(lambda i: get_batch(base_url, url_params, i)).collect()

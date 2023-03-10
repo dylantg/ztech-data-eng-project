@@ -5,7 +5,7 @@ from plotly.subplots import make_subplots
 from plotly.offline import plot
 
 
-ts = 1678335199  # int(time.time())
+ts = 1678428168  # int(time.time())
 gold_q1_input = f"./case/gold/uploaded_at={ts}/q1"
 gold_q2_input = f"./case/gold/uploaded_at={ts}/q2"
 gold_q3_input = f"./case/gold/uploaded_at={ts}/q3"
