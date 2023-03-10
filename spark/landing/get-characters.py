@@ -12,7 +12,7 @@ MARVEL_PRIVATE_KEY = os.getenv('MARVEL_PRIVATE_KEY')
 spark = SparkSession.builder.appName('get-characters').getOrCreate()
 sc = spark.sparkContext
 
-ts = int(time.time())
+ts = 1678428168  # int(time.time())
 output_folder = f"./case/landing/characters/uploaded_at={ts}"
 print(f"output_folder: {output_folder}")
 os.makedirs(os.path.dirname(output_folder), exist_ok=True)
