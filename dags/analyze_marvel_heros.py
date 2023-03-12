@@ -84,8 +84,7 @@ process_events = SparkSubmitOperator(
 process_characters = BashOperator(
     task_id='process_characters',
     # bash_command='usr/bin/spark-submit --master spark://spark:7077 /usr/local/spark/app/silver/process_characters.py',
-    bash_command="""echo \'Spark_home: \' $SPARK_HOME\' &&
-                 /home/airflow/.local/lib/python3.7/site-packages/pyspark/bin/spark-submit --master spark://spark:7077 /usr/local/spark/app/silver/process_characters.py""",
+    bash_command="/home/airflow/.local/lib/python3.7/site-packages/pyspark/bin/spark-submit --master spark://spark:7077 /usr/local/spark/app/silver/process_characters.py",
     dag=dag
 )
 # process_characters = SparkSubmitOperator(
@@ -135,6 +134,28 @@ end = EmptyOperator(
     dag=dag
 )
 
+echo_spark_home = BashOperator(
+    task_id='echo_spark_home',
+    bash_command="echo 'SPARK_HOME: ' $SPARK_HOME",
+    dag=dag
+)
+echo_java_home = BashOperator(
+    task_id='echo_java_home',
+    bash_command="echo 'JAVA_HOME: ' $JAVA_HOME",
+    dag=dag
+)
+echo_path = BashOperator(
+    task_id='echo_path',
+    bash_command="echo 'PATH: ' $PATH",
+    dag=dag
+)
+
+java_version = BashOperator(
+    task_id='java_version',
+    bash_command="java -version",
+    dag=dag
+)
 start >> get_characters >> process_characters >> process_gold
 start >> get_events >> process_events >> process_gold
+start >> echo_spark_home >> echo_java_home >> echo_path >> java_version >> end
 process_gold >> plot_data >> end

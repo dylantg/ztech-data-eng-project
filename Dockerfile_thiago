@@ -5,8 +5,7 @@
 # BASED ON: https://github.com/puckel/docker-airflow
 
 # stretch debian version allows JAVA JDK 8
-#FROM python:3.6-stretch
-FROM python:3.7-stretch
+FROM python:3.6-stretch
 LABEL maintainer="cordon-thiago"
 
 # Never prompts the user for choices on installation/configuration of packages
@@ -31,7 +30,7 @@ ENV LC_CTYPE en_US.UTF-8
 ENV LC_MESSAGES en_US.UTF-8
 
 COPY requirements.txt /requirements.txt
-#     && pip install --use-feature=2020-resolver apache-airflow[crypto,celery,postgres,hive,jdbc,mysql,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}]==${AIRFLOW_VERSION} \
+
 RUN set -ex \
     && buildDeps=' \
         freetds-dev \
@@ -66,7 +65,7 @@ RUN set -ex \
     && pip install ndg-httpsclient \
     && pip install pyasn1 \
     && pip install -r requirements.txt \
-    && pip install apache-airflow[celery,postgres,hive,jdbc,mysql,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}]==${AIRFLOW_VERSION} \
+    && pip install --use-feature=2020-resolver apache-airflow[crypto,celery,postgres,hive,jdbc,mysql,ssh${AIRFLOW_DEPS:+,}${AIRFLOW_DEPS}]==${AIRFLOW_VERSION} \
     && pip install 'redis>=2.10.5,<3' \
     && if [ -n "${PYTHON_DEPS}" ]; then pip install ${PYTHON_DEPS}; fi \
     && apt-get purge --auto-remove -yqq $buildDeps \
@@ -105,8 +104,7 @@ RUN export JAVA_HOME
 ## Finish JAVA installation
 ###############################
 
-#COPY entrypoint_thiago.sh /entrypoint.sh
-COPY entrypoint.sh /entrypoint.sh
+COPY entrypoint_thiago.sh /entrypoint.sh
 COPY config/airflow.cfg ${AIRFLOW_HOME}/airflow/airflow.cfg
 
 ###############################
@@ -132,7 +130,7 @@ ENV PATH $PATH:/usr/local/spark/bin
 ###############################
 
 RUN chown -R airflow: ${AIRFLOW_HOME}
-RUN chmod +x entrypoint.sh
+RUN chmod +x entrypoint_thiago.sh
 
 EXPOSE 8080 5555 8793
 

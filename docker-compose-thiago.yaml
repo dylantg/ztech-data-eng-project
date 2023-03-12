@@ -121,8 +121,8 @@ services:
             - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
             - SPARK_SSL_ENABLED=no
         volumes:
-            - ./spark/app:/usr/local/spark/app # Spark scripts folder (Must be the same path in airflow and Spark Cluster)
-            - ./spark/resources:/usr/local/spark/resources #Resources folder (Must be the same path in airflow and Spark Cluster)
+            - ../spark/app:/usr/local/spark/app # Spark scripts folder (Must be the same path in airflow and Spark Cluster)
+            - ../spark/resources:/usr/local/spark/resources #Resources folder (Must be the same path in airflow and Spark Cluster)
 
 #    #Jupyter notebook
 #    jupyter-spark:

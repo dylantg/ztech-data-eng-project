@@ -1,5 +1,13 @@
+celery
+kombu
+tornado
+werkzeug
 pyspark
-apache-airflow[apache.spark]
+SQLAlchemy
+wtforms
+apache-airflow==2.5.1
+apache-airflow-providers-apache-spark
+apache-airflow-providers-ssh
 requests
 pyyaml
 pyarrow
@@ -9,4 +17,3 @@ pandas
 kaleido
 plotly
 python-dotenv
-apache-airflow-providers-ssh
